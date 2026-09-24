@@ -1,0 +1,27 @@
+{
+  "name": "@nullaitech/zoth-webgen",
+  "version": "2.4.0",
+  "description": "Autonomous sovereign website generator and live preview workstation by NullAI Tech.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "webgen",
+    "website-generator",
+    "sovereign-ai",
+    "local-first",
+    "zero-egress",
+    "polyglot-exporter",
+    "zoth-studio",
+    "nullai-tech"
+  ],
+  "author": "NullAI Tech (https://nullai.tech)",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NullAITech/zoth-webgen.git"
+  }
+}

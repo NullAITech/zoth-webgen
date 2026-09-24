@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoth WebGen — Autonomous Site Foundry & Live Sneak-Peek Preview</title>
+  <meta name="description" content="Autonomous local-first website generator. Select starter layouts, preview live responsive UI, and export polyglot bundles." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #08080B;
+      --surface: #10121A;
+      --surface-elevated: #161926;
+      --border: rgba(212, 175, 55, 0.25);
+      --gold: #D4AF37;
+      --gold-light: #F5E6AB;
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --font-serif: 'Cinzel', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+    header {
+      padding: 1.5rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(16, 18, 26, 0.95);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .brand h1 {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      color: var(--gold-light);
+      letter-spacing: 0.04em;
+    }
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .hero {
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 0.8rem;
+    }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(360px, 460px) 1fr;
+      gap: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem 5rem;
+      width: 100%;
+    }
+    @media (max-width: 1024px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    }
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--bg);
+      font-weight: 900;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      margin-right: 0.5rem;
+    }
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: #FFF;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .chip {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chip:hover, .chip.active {
+      border-color: var(--gold);
+      color: var(--gold-light);
+      background: rgba(212, 175, 55, 0.15);
+    }
+    textarea, input {
+      width: 100%;
+      background: #090B12;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      color: var(--text);
+      padding: 0.85rem 1rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+      outline: none;
+    }
+    textarea:focus, input:focus {
+      border-color: var(--gold);
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold) 0%, #B8860B 100%);
+      color: #08080B;
+      font-weight: 800;
+      border: none;
+      padding: 0.85rem 1.75rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 18px rgba(212, 175, 55, 0.25);
+      transition: transform 0.15s;
+    }
+    .btn-gold:hover { transform: translateY(-2px); }
+    .preview-pane {
+      display: flex;
+      flex-direction: column;
+    }
+    .device-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface-elevated);
+      padding: 0.75rem 1.25rem;
+      border-top-left-radius: 1.25rem;
+      border-top-right-radius: 1.25rem;
+      border: 1px solid var(--border);
+      border-bottom: none;
+    }
+    .device-toggles {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .device-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+      padding: 0.3rem 0.75rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+    }
+    .device-btn.active {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(212,175,55,0.1);
+    }
+    .viewport-frame {
+      flex: 1;
+      min-height: 580px;
+      background: #000;
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 1.25rem;
+      border-bottom-right-radius: 1.25rem;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: 1rem;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 560px;
+      border: none;
+      background: #08080B;
+      border-radius: 0.75rem;
+      transition: width 0.3s ease;
+    }
+    .funnel-banner {
+      background: linear-gradient(180deg, rgba(212,175,55,0.08) 0%, rgba(16,18,26,0.95) 100%);
+      border: 1px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 2.5rem;
+      margin: 2rem auto 4rem;
+      max-width: 1600px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 768px) {
+      .funnel-banner { grid-template-columns: 1fr; }
+    }
+    .funnel-box {
+      background: #090B12;
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      border-radius: 1rem;
+    }
+    .funnel-box h4 {
+      color: var(--gold-light);
+      margin-bottom: 0.5rem;
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+    }
+    .code-chip {
+      background: #000;
+      padding: 0.6rem 0.85rem;
+      border-radius: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #38BDF8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <span class="badge">ZOTH ECOSYSTEM</span>
+      <h1>WebGen Autonomous Foundry</h1>
+    </div>
+    <div style="display:flex; gap:0.75rem;">
+      <a href="https://github.com/NullAITech/zoth-studio-v2" target="_blank" class="badge" style="text-decoration:none;">Zoth Studio v2</a>
+      <a href="https://github.com/NullAITech/zoth-os" target="_blank" class="badge" style="text-decoration:none;">Zoth OS</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h2>Describe a website. Watch it appear.</h2>
+    <p>Sovereign local-first component generator. Instant responsive sneak-peek preview inside device frames and one-click polyglot export.</p>
+  </div>
+
+  <main class="main-grid">
+    <!-- LEFT: Steps & Controls -->
+    <div style="display:flex; flex-direction:column; gap:1.5rem;">
+      
+      <!-- STEP 1: Ideation & Prompt -->
+      <div class="card">
+        <div class="step-title"><span class="section-num">1</span> What should it be?</div>
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.75rem;">Pick a starter layout preset or write custom specifications:</p>
+        <div class="chips" id="presetChips">
+          <div class="chip active" onclick="selectPreset('saas')">SaaS Dashboard</div>
+          <div class="chip" onclick="selectPreset('portfolio')">Cyberpunk Portfolio</div>
+          <div class="chip" onclick="selectPreset('swarm')">AI Swarm Console</div>
+          <div class="chip" onclick="selectPreset('docs')">Developer Docs Hub</div>
+        </div>
+        <textarea id="promptInput" rows="3">Dark mode SaaS dashboard with golden telemetry metrics, latency tracker, and air-gapped zero-egress status.</textarea>
+      </div>
+
+      <!-- STEP 2: Name & Theme -->
+      <div class="card">
+        <div class="step-title"><span class="section-num">2</span> Brand Look & Aesthetic</div>
+        <input type="text" id="siteNameInput" value="sovereign-matrix" placeholder="Site name (e.g. cyber-vault)">
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.75rem;">Select visual token theme:</p>
+        <div class="chips">
+          <div class="chip active" onclick="setTheme('gold', this)">Sovereign Gold</div>
+          <div class="chip" onclick="setTheme('cyberpunk', this)">Cyberpunk Neon</div>
+          <div class="chip" onclick="setTheme('matrix', this)">Matrix Terminal</div>
+          <div class="chip" onclick="setTheme('minimal', this)">Minimalist Slate</div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Generate Trigger -->
+      <button class="btn-gold" onclick="generatePreview()">⚡ Synthesize &amp; Refresh Preview</button>
+
+    </div>
+
+    <!-- RIGHT: Live Sneak-Peek Viewport -->
+    <div class="preview-pane">
+      <div class="device-bar">
+        <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--gold);">LIVE SNEAK-PEEK PREVIEW</span>
+        <div class="device-toggles">
+          <button class="device-btn active" onclick="setViewport('100%', this)">Desktop</button>
+          <button class="device-btn" onclick="setViewport('768px', this)">Tablet</button>
+          <button class="device-btn" onclick="setViewport('375px', this)">Mobile</button>
+        </div>
+      </div>
+      <div class="viewport-frame">
+        <iframe id="previewFrame" title="Live Website Sneak Peek"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <!-- FUNNEL CTA -->
+  <section class="funnel-banner">
+    <div class="funnel-box">
+      <h4>⚡ Install Zoth Studio v2</h4>
+      <p style="color:var(--text-muted); font-size:0.85rem;">Run the entire sovereign development suite, biomorphic memory daemon, and 29+ local tools on your machine.</p>
+      <div class="code-chip">
+        <span>git clone https://github.com/NullAITech/zoth-studio-v2.git</span>
+      </div>
+    </div>
+    <div class="funnel-box">
+      <h4>🛡️ Boot Zoth OS</h4>
+      <p style="color:var(--text-muted); font-size:0.85rem;">Sovereign alchemical operating system with Kali/Parrot parity, local frontier AI, and zero cloud egress.</p>
+      <div class="code-chip">
+        <span>https://github.com/NullAITech/zoth-os</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const presets = {
+      saas: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { background: #08080B; color: #F8FAFC; font-family: ui-sans-serif, system-ui, sans-serif; margin: 0; padding: 2rem; }
+    .header { border-bottom: 1px solid rgba(212,175,55,0.25); padding-bottom: 1.5rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .badge { background: rgba(212,175,55,0.15); color: #D4AF37; padding: 0.35rem 0.75rem; border-radius: 9999px; font-family: monospace; font-size: 0.75rem; border: 1px solid rgba(212,175,55,0.3); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; }
+    .card { background: #12131C; border: 1px solid rgba(212,175,55,0.2); border-radius: 1rem; padding: 1.25rem; }
+    .val { font-size: 1.75rem; font-weight: 800; color: #D4AF37; font-family: monospace; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <span class="badge">ZOTH SOVEREIGN RUNTIME</span>
+      <h1 style="margin: 0.5rem 0 0; font-size: 1.8rem;">Sovereign SaaS Dashboard</h1>
+    </div>
+    <button style="background:#D4AF37; border:none; padding:0.6rem 1.2rem; font-weight:800; border-radius:0.5rem; cursor:pointer;">Deploy</button>
+  </div>
+  <div class="grid">
+    <div class="card"><div style="color:#94A3B8; font-size:0.75rem;">CLUSTER LATENCY</div><div class="val">12.4ms</div></div>
+    <div class="card"><div style="color:#94A3B8; font-size:0.75rem;">SWARM NODES</div><div class="val">6 / 6 ONLINE</div></div>
+    <div class="card"><div style="color:#94A3B8; font-size:0.75rem;">EGRESS AUDIT</div><div class="val">0 BYTES OUT</div></div>
+  </div>
+</body>
+</html>`,
+      portfolio: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { background: #050508; color: #00F0FF; font-family: monospace; margin: 0; padding: 2rem; }
+    h1 { font-size: 2.2rem; text-shadow: 2px 2px #D946EF; }
+    .card { background: rgba(8, 12, 24, 0.9); border: 1px solid #00F0FF; border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>ARCHON // SECURITY RESEARCHER</h1>
+  <p style="color:#94A3B8;">Autonomous penetration testing, zero-knowledge proofs, and local AI agent swarms.</p>
+  <div class="card">
+    <h3 style="color:#D946EF;">[PROJECT: HEXSTRIKE ARSENAL]</h3>
+    <p>Automated CVE auditor, exploit payload generator, and air-gapped terminal.</p>
+  </div>
+</body>
+</html>`
+    };
+
+    let currentPreset = 'saas';
+
+    function selectPreset(type) {
+      currentPreset = type;
+      document.querySelectorAll('#presetChips .chip').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+      generatePreview();
+    }
+
+    function setViewport(width, btn) {
+      document.getElementById('previewFrame').style.width = width;
+      document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function setTheme(theme, btn) {
+      document.querySelectorAll('.chips .chip').forEach(b => {
+        if (b.innerText.toLowerCase().includes(theme)) {
+          b.classList.add('active');
+        }
+      });
+    }
+
+    function generatePreview() {
+      const frame = document.getElementById('previewFrame');
+      const doc = frame.contentWindow.document;
+      doc.open();
+      doc.write(presets[currentPreset] || presets.saas);
+      doc.close();
+    }
+
+    window.onload = generatePreview;
+  </script>
+</body>
+</html>
