@@ -114,3 +114,36 @@ def test_mcp_server_master_artifacts_call():
         assert res["id"] == 4
         assert "isError" not in res
         assert (Path(tmpdir) / "master-blueprint.json").exists()
+
+def test_server_endpoints():
+    import urllib.request
+    import threading
+    from server import run_server
+    from http.server import ThreadingHTTPServer
+    from server import WebGenHandler
+
+    server = ThreadingHTTPServer(('127.0.0.1', 0), WebGenHandler)
+    port = server.server_port
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/health") as res:
+            assert res.status == 200
+            data = json.loads(res.read().decode('utf-8'))
+            assert data["status"] == "healthy"
+            assert data["zero_egress"] is True
+
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/templates") as res:
+            assert res.status == 200
+            data = json.loads(res.read().decode('utf-8'))
+            assert "saas-dashboard" in data
+
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/index.html") as res:
+            assert res.status == 200
+            html = res.read().decode('utf-8')
+            assert "Zoth WebGen" in html
+    finally:
+        server.shutdown()
+        server.server_close()
+

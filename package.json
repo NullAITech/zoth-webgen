@@ -1,12 +1,17 @@
 {
-  "name": "@nullaitech/zoth-webgen",
+  "name": "zoth-webgen",
   "version": "2.4.0",
   "description": "Autonomous sovereign website generator and live preview workstation by NullAI Tech.",
-  "main": "index.html",
+  "main": "electron/main.cjs",
+  "bin": {
+    "webgen": "./bin/webgen.js",
+    "zoth-webgen": "./bin/webgen.js"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "start": "python3 server.py --port 8092",
+    "electron": "electron .",
+    "app": "electron .",
+    "test": "pytest tests/"
   },
   "keywords": [
     "webgen",
@@ -16,12 +21,16 @@
     "zero-egress",
     "polyglot-exporter",
     "zoth-studio",
-    "nullai-tech"
+    "nullai-tech",
+    "electron"
   ],
   "author": "NullAI Tech (https://nullai.tech)",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/NullAITech/zoth-webgen.git"
+  },
+  "devDependencies": {
+    "electron": "^34.5.8"
   }
 }

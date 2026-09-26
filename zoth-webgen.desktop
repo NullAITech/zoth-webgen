@@ -1,0 +1,20 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Zoth WebGen Studio
+GenericName=Autonomous Site Foundry & Viewport Workstation
+Comment=Autonomous sovereign website generator and live preview workstation by NullAI Tech
+Exec=/usr/local/bin/webgen desktop
+Icon=/media/neo/f2fdda77-178b-4603-ae80-c7aa4cd97908/zoth-micro-repos/zoth-webgen/assets/icon.png
+Terminal=false
+Categories=Development;System;Utility;
+StartupNotify=true
+Actions=CLI;Web;
+
+[Desktop Action CLI]
+Name=Open WebGen CLI
+Exec=x-terminal-emulator -e "/usr/local/bin/webgen --help"
+
+[Desktop Action Web]
+Name=Open Web UI (Port 8092)
+Exec=/usr/local/bin/webgen web
