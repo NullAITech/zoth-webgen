@@ -7,7 +7,7 @@ Enables AI agents (Claude, Cursor, Hermes, Cline) to generate sovereign, zero-eg
 import sys
 import json
 from pathlib import Path
-from webgen_engine import TEMPLATES, generate_site
+from webgen_engine import TEMPLATES, generate_site, generate_master_artifacts
 
 TOOLS = [
     {
@@ -39,6 +39,34 @@ TOOLS = [
             "additionalProperties": False,
         },
     },
+    {
+        "name": "webgen_generate_master_artifacts",
+        "description": "Generate all 4 Master Artifacts (master-prompt.txt, master-instructions.sh, master-blueprint.json, llms.txt) for an archetype.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "template": {
+                    "type": "string",
+                    "enum": list(TEMPLATES.keys()),
+                    "description": "The template identifier",
+                },
+                "framework": {
+                    "type": "string",
+                    "description": "Target framework (e.g. react-tailwind, astro, html, svelte)",
+                },
+                "theme": {
+                    "type": "string",
+                    "description": "Visual token theme (e.g. gold, cyberpunk, matrix)",
+                },
+                "output_dir": {
+                    "type": "string",
+                    "description": "Destination directory for master artifacts",
+                },
+            },
+            "required": ["template", "output_dir"],
+            "additionalProperties": False,
+        },
+    },
 ]
 
 def handle_request(req: dict) -> dict:
@@ -52,7 +80,7 @@ def handle_request(req: dict) -> dict:
             "result": {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {"tools": {}},
-                "serverInfo": {"name": "zoth-webgen-mcp", "version": "1.0.0"},
+                "serverInfo": {"name": "zoth-webgen-mcp", "version": "1.1.0"},
             },
         }
 
@@ -73,7 +101,12 @@ def handle_request(req: dict) -> dict:
         if name == "webgen_list_templates":
             items = []
             for k, v in TEMPLATES.items():
-                items.append({"id": k, "title": v.get("title"), "description": v.get("description")})
+                items.append({
+                    "id": k,
+                    "title": v.get("title"),
+                    "description": v.get("description"),
+                    "category": v.get("category", "SOVEREIGN")
+                })
             return {
                 "jsonrpc": "2.0",
                 "id": msg_id,
@@ -94,6 +127,35 @@ def handle_request(req: dict) -> dict:
                                 "type": "text",
                                 "text": json.dumps(
                                     {"status": "success", "template": tpl, "output_path": out, "zero_egress": True}
+                                ),
+                            }
+                        ]
+                    },
+                }
+            except Exception as e:
+                return {
+                    "jsonrpc": "2.0",
+                    "id": msg_id,
+                    "isError": True,
+                    "error": {"code": -32603, "message": str(e)},
+                }
+
+        if name == "webgen_generate_master_artifacts":
+            tpl = args.get("template", "saas-dashboard")
+            fw = args.get("framework", "react-tailwind")
+            theme = args.get("theme", "gold")
+            out_dir = args.get("output_dir", "./dist/artifacts")
+            try:
+                res = generate_master_artifacts(tpl, framework=fw, theme=theme, output_dir=out_dir)
+                return {
+                    "jsonrpc": "2.0",
+                    "id": msg_id,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": json.dumps(
+                                    {"status": "success", "template": tpl, "artifacts": res, "zero_egress": True}
                                 ),
                             }
                         ]

@@ -5,12 +5,20 @@ import tempfile
 from pathlib import Path
 import pytest
 
-from webgen_engine import TEMPLATES, generate_site
+from webgen_engine import TEMPLATES, generate_site, generate_master_artifacts
 from mcp_server import handle_request
 
 def test_templates_catalog():
-    assert "saas-dashboard" in TEMPLATES
-    assert "cyberpunk-portfolio" in TEMPLATES
+    expected = [
+        "saas-dashboard",
+        "cyberpunk-portfolio",
+        "ai-swarm-console",
+        "documentation-hub",
+        "solana-web3-mint",
+        "biomorphic-neuro-shop"
+    ]
+    for key in expected:
+        assert key in TEMPLATES
     for name, data in TEMPLATES.items():
         assert "html" in data
         assert "title" in data
@@ -27,6 +35,21 @@ def test_generate_site():
         content = out_file.read_text(encoding="utf-8")
         assert "Sovereign SaaS Dashboard" in content
         assert "ZERO-EGRESS" in content
+
+def test_generate_master_artifacts():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        res = generate_master_artifacts("ai-swarm-console", framework="astro", theme="gold", output_dir=tmpdir)
+        assert Path(res["master_prompt"]).exists()
+        assert Path(res["master_instructions"]).exists()
+        assert Path(res["master_blueprint"]).exists()
+        assert Path(res["llms_txt"]).exists()
+
+        prompt_txt = Path(res["master_prompt"]).read_text(encoding="utf-8")
+        assert "SOVEREIGN AUTONOMOUS MASTER PROMPT" in prompt_txt
+
+        bp_json = json.loads(Path(res["master_blueprint"]).read_text(encoding="utf-8"))
+        assert bp_json["project"] == "ai-swarm-console"
+        assert bp_json["frameworkTarget"] == "astro"
 
 def test_cli_execution():
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -51,6 +74,7 @@ def test_mcp_server_tools_list():
     tool_names = [t["name"] for t in res["result"]["tools"]]
     assert "webgen_list_templates" in tool_names
     assert "webgen_generate_site" in tool_names
+    assert "webgen_generate_master_artifacts" in tool_names
 
 def test_mcp_server_generate_site_call():
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -71,3 +95,22 @@ def test_mcp_server_generate_site_call():
         assert res["id"] == 3
         assert "isError" not in res
         assert out_file.exists()
+
+def test_mcp_server_master_artifacts_call():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        req = {
+            "jsonrpc": "2.0",
+            "id": 4,
+            "method": "tools/call",
+            "params": {
+                "name": "webgen_generate_master_artifacts",
+                "arguments": {
+                    "template": "solana-web3-mint",
+                    "output_dir": tmpdir
+                }
+            }
+        }
+        res = handle_request(req)
+        assert res["id"] == 4
+        assert "isError" not in res
+        assert (Path(tmpdir) / "master-blueprint.json").exists()
