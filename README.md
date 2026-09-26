@@ -95,10 +95,34 @@ npx zoth pull zoth-webgen
 zoth webgen "Dark portfolio for an AI security researcher" --theme=cyberpunk --framework=react
 ```
 
-### Option 3: Python Automation Engine
+### Option 3: Python Automation Engine & Testing
 ```bash
-python3 webgen_engine.py --template=saas-dashboard --theme=gold --out=./dist/site
+python3 webgen_engine.py --template=saas-dashboard --out=./dist/index.html
+
+# Run automated test suite
+python3 -m pytest -v
 ```
+
+### Option 4: Model Context Protocol (MCP) for Autonomous AI Agents
+Zoth WebGen exports a zero-egress Model Context Protocol (MCP) JSON-RPC 2.0 stdio server. AI agents (Claude Code, Cursor, Hermes Agent, Cline) can generate sovereign websites programmatically:
+
+```json
+{
+  "mcpServers": {
+    "zoth-webgen": {
+      "command": "python3",
+      "args": ["/path/to/zoth-webgen/mcp_server.py"],
+      "env": {
+        "ZOTH_ZERO_EGRESS": "true"
+      }
+    }
+  }
+}
+```
+
+#### Available MCP Endpoints:
+- `webgen_list_templates`: Catalog of all sovereign layout templates.
+- `webgen_generate_site`: Generate a high-contrast dark/gold sovereign HTML site into a target file.
 
 ---
 
